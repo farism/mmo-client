@@ -1,0 +1,8 @@
+{
+  "transform": {
+    ".jsx?": "babel-jest",
+    ".tsx?": "./node_modules/ts-jest/preprocessor.js"
+  },
+  "testRegex": "(/__tests__/).*\\.(j|t)sx?$",
+  "moduleFileExtensions": ["js", "jsx", "ts", "tsx"]
+}

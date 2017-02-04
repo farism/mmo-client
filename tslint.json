@@ -1,0 +1,14 @@
+{
+  "extends": ["tslint:latest", "tslint-react"],
+  "rules": {
+    "indent": [true, "spaces"],
+    "semicolon": [true, "never", "ignore-interfaces"],
+    "quotemark": [true, "single"],
+    "no-unused-variable": [true, "react"],
+    "trailing-comma": [true, {"multiline": "always"}],
+    "interface-name": false,
+    "no-unused-expression": false,
+    "object-literal-sort-keys": false,
+    "one-variable-per-declaration": false
+  }
+}

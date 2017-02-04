@@ -1,0 +1,17 @@
+{
+  "parser": "babel-eslint",
+  "plugins": ["import"],
+  "rules": {
+    "import/no-unresolved": [2, {commonjs: true, amd: true}],
+    "import/no-extraneous-dependencies": 0
+  },
+  "settings": {
+    "import/core-modules": ['electron'],
+    "import/ignore": ['\.coffee$', '\.(scss|less|css)'],
+    "import/resolver": {
+      "node": {
+        "extensions": ['.js', '.jsx', '.ts', '.tsx']
+      }
+    }
+  }
+}
