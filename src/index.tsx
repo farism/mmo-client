@@ -1,21 +1,26 @@
 import * as net from 'net'
+import { Presence, Socket } from 'phoenix'
 import * as React from 'react'
 
 import UI from './ui'
 
-const client = net.connect({ port: 8124 }, () => {
-  console.log('connected to server!')
-  client.write('world!\r\n')
+const socket = new Socket('ws://localhost:4000/socket', { params: { user: 'faris' } })
+
+socket.connect()
+
+let presences = {}
+
+const room = socket.channel('room:lobby')
+
+room.on('presence_state', (state) => {
+  presences = Presence.syncState(presences, state)
 })
 
-client.on('data', (data) => {
-  console.log(data.toString())
-  client.end()
+room.on('presence_diff', (diff) => {
+  presences = Presence.syncDiff(presences, diff)
 })
 
-client.on('end', () => {
-  console.log('disconnected from server')
-})
+room.join()
 
 export default (props: any) => {
   return <UI />

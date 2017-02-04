@@ -58,6 +58,7 @@
   },
   "dependencies": {
     "@types/node": "^7.0.4",
+    "@types/phoenix": "^0.0.4",
     "@types/react": "^15.0.5",
     "@types/react-dom": "^0.14.22",
     "@types/recompose": "^0.20.3",
@@ -70,6 +71,7 @@
     "electron": "^1.4.15",
     "node-opus": "^0.2.4",
     "opusscript": "^0.0.2",
+    "phoenix": "^1.2.1",
     "ramda": "^0.23.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",

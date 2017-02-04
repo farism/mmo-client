@@ -24,6 +24,10 @@
   version "7.0.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.4.tgz#9aabc135979ded383325749f508894c662948c8b"
 
+"@types/phoenix@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@types/phoenix/-/phoenix-0.0.4.tgz#6ada6be91dfdc1fa77ed57691f92821920f71d12"
+
 "@types/react-dom@^0.14.22":
   version "0.14.22"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-0.14.22.tgz#a9a9d2c1461dda668a8bbaef8d62f6abc7d6b9bd"
@@ -4112,6 +4116,10 @@ pbkdf2@^3.0.3:
 pend@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
+
+phoenix@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/phoenix/-/phoenix-1.2.1.tgz#d0af655484a4233fd539b8b58fe864eff8527601"
 
 pify@^2.0.0:
   version "2.3.0"
