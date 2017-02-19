@@ -1,6 +1,7 @@
 import * as net from 'net'
 import { Presence, Socket } from 'phoenix'
 import * as React from 'react'
+import { Provider } from 'react-redux'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -25,5 +26,9 @@ import UI from './ui'
 // room.join()
 
 export default (props: any) => {
-  return <UI />
+  return (
+    <Provider store={{}}>
+      <UI />
+    </Provider>
+  )
 }
