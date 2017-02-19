@@ -44,7 +44,7 @@ const targets = {
       plugins: [
         ...base.plugins,
         new webpack.NoEmitOnErrorsPlugin(),
-        new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('development') }}),
+        // new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('development') }}),
       ],
     },
 
@@ -58,7 +58,7 @@ const targets = {
       },
       plugins: [
         ...base.plugins,
-        new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') }}),
+        // new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') }}),
         new webpack.optimize.UglifyJsPlugin({ compressor: { screw_ie8: true, warnings: false }}),
       ],
     },
@@ -77,7 +77,7 @@ const targets = {
       plugins: [
         ...base.plugins,
         new webpack.NoEmitOnErrorsPlugin(),
-        new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('development') }}),
+        // new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('development') }}),
       ],
     },
 
@@ -91,7 +91,7 @@ const targets = {
       },
       plugins: [
         ...base.plugins,
-        new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') }}),
+        // new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') }}),
         new webpack.optimize.UglifyJsPlugin({ compressor: { screw_ie8: true, warnings: false }}),
       ],
     },

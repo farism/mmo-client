@@ -6,6 +6,51 @@
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/7zip/-/7zip-0.0.6.tgz#9cafb171af82329490353b4816f03347aa150a30"
 
+"@protobufjs/aspromise@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.1.tgz#22526b2959bbc8dcc531dfcf569a9e2a1eeb3e1f"
+
+"@protobufjs/base64@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@protobufjs/base64/-/base64-1.1.1.tgz#8f10115d2b1ac2c25f3602e55eba708e56bcd2bb"
+
+"@protobufjs/codegen@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@protobufjs/codegen/-/codegen-1.0.8.tgz#d29e3d48a9445d77ccbffa420379b29dc37c6d7d"
+
+"@protobufjs/eventemitter@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@protobufjs/eventemitter/-/eventemitter-1.1.0.tgz#355cbc98bafad5978f9ed095f397621f1d066b70"
+
+"@protobufjs/fetch@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@protobufjs/fetch/-/fetch-1.1.0.tgz#ba99fb598614af65700c1619ff06d454b0d84c45"
+  dependencies:
+    "@protobufjs/aspromise" "^1.1.1"
+    "@protobufjs/inquire" "^1.1.0"
+
+"@protobufjs/inquire@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@protobufjs/inquire/-/inquire-1.1.0.tgz#ff200e3e7cf2429e2dcafc1140828e8cc638f089"
+
+"@protobufjs/path@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@protobufjs/path/-/path-1.1.1.tgz#478ad5c3fba40b7f478bcd1f8f3e8147ac1bdd78"
+
+"@protobufjs/pool@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@protobufjs/pool/-/pool-1.1.0.tgz#09fd15f2d6d3abfa9b65bc366506d6ad7846ff54"
+
+"@protobufjs/utf8@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
+
+"@types/dotenv@^2.0.20":
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/@types/dotenv/-/dotenv-2.0.20.tgz#79ca51c9594cc889cc8a72427ea8db4ddfd32929"
+  dependencies:
+    "@types/node" "*"
+
 "@types/enzyme@^2.7.2":
   version "2.7.2"
   resolved "https://registry.yarnpkg.com/@types/enzyme/-/enzyme-2.7.2.tgz#b19a457f29d2d1a054a880feb86666b993ed6cdc"
@@ -16,13 +61,21 @@
   version "18.1.0"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-18.1.0.tgz#ed18f4c75b3d76de966f543fb6e3bad77d3caa17"
 
+"@types/long@^3.0.31":
+  version "3.0.31"
+  resolved "https://registry.yarnpkg.com/@types/long/-/long-3.0.31.tgz#08635b0d0d322676940c1a88a7a9cef661c6f34a"
+
+"@types/node@*", "@types/node@^7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.5.tgz#96a0f0a618b7b606f1ec547403c00650210bfbb7"
+
+"@types/node@7.0.4":
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.4.tgz#9aabc135979ded383325749f508894c662948c8b"
+
 "@types/node@^6.0.0":
   version "6.0.62"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.62.tgz#85222c077b54f25b57417bb708b9f877bda37f89"
-
-"@types/node@^7.0.4":
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.4.tgz#9aabc135979ded383325749f508894c662948c8b"
 
 "@types/phoenix@^0.0.4":
   version "0.0.4"
@@ -59,6 +112,10 @@
   resolved "https://registry.yarnpkg.com/@types/three/-/three-0.83.1.tgz#170893bf0ed3b8c1458019b7c16959774ce0cf03"
   dependencies:
     "@types/webvr-api" "*"
+
+"@types/webrtc@^0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@types/webrtc/-/webrtc-0.0.21.tgz#bc3cfb7e22add284761e5d63efad664b0eba8b86"
 
 "@types/webvr-api@*":
   version "0.0.31"
@@ -1856,6 +1913,10 @@ dot-prop@^3.0.0:
   dependencies:
     is-obj "^1.0.0"
 
+dotenv@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-4.0.0.tgz#864ef1379aced55ce6f95debecdce179f7a0cd1d"
+
 duplexer2@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/duplexer2/-/duplexer2-0.0.2.tgz#c614dcf67e2fb14995a91711e5a617e8a60a31db"
@@ -3591,6 +3652,10 @@ lodash@^4.0.0, lodash@^4.14.0, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
+long@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/long/-/long-3.2.0.tgz#d821b7138ca1cb581c172990ef14db200b5c474b"
+
 longest@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
@@ -4474,6 +4539,24 @@ promise@^7.1.1:
   resolved "https://registry.yarnpkg.com/promise/-/promise-7.1.1.tgz#489654c692616b8aa55b0724fa809bb7db49c5bf"
   dependencies:
     asap "~2.0.3"
+
+protobufjs@^6.6.3:
+  version "6.6.3"
+  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.6.3.tgz#ee7388dd945e810ce738dcb65bfd09fa47aa4993"
+  dependencies:
+    "@protobufjs/aspromise" "^1.1.1"
+    "@protobufjs/base64" "^1.1.1"
+    "@protobufjs/codegen" "^1.0.8"
+    "@protobufjs/eventemitter" "^1.1.0"
+    "@protobufjs/fetch" "^1.1.0"
+    "@protobufjs/inquire" "^1.1.0"
+    "@protobufjs/path" "^1.1.1"
+    "@protobufjs/pool" "^1.1.0"
+    "@protobufjs/utf8" "^1.1.0"
+    "@types/node" "7.0.4"
+  optionalDependencies:
+    "@types/long" "^3.0.31"
+    long "^3.2.0"
 
 prr@~0.0.0:
   version "0.0.0"
