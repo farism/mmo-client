@@ -9,14 +9,12 @@ export default function main({DOM}) {
   return {
     DOM: mouse$.map((position) =>
       div([
-        `x: ${position.x}`,
-        `y: ${position.y}`,
+        `X: ${position.x}`,
+        `Y: ${position.y}`,
       ]),
     ),
   }
 }
-
-
 
 // import * as net from 'net'
 // import { Presence, Socket } from 'phoenix'

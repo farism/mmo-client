@@ -1,27 +1,16 @@
-import {div, makeDOMDriver} from '@cycle/dom'
+import {makeDOMDriver} from '@cycle/dom'
 import {run} from '@cycle/xstream-run'
-// import xs from 'xstream'
 
-// import UI from './ui'
+import UI from './ui'
 
-export default function main({DOM}) {
-  const mouse$ = DOM
-    .select('document')
-    .events('mousemove')
-    .map((ev) => ({x: ev.clientX, y: ev.clientY}))
-
+export default function Renderer({DOM}) {
   return {
-    DOM: mouse$.map((position) =>
-      div([
-        `x: ${position.x}`,
-        `y: ${position.y}`,
-      ]),
-    ),
+    DOM: UI({DOM}).DOM,
   }
 }
 
 const sources = {
-  DOM: makeDOMDriver('#app')
+  DOM: makeDOMDriver('#app'),
 }
 
-run(main, sources)
+run(Renderer, sources)
