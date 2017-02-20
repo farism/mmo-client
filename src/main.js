@@ -1,11 +1,11 @@
 import { app, BrowserWindow } from 'electron'
 import debug from 'electron-debug'
-import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
+import installExtension from 'electron-devtools-installer'
 import webpack from 'webpack'
 
-import config from './webpack.config.babel'
+import config from '../webpack.config.babel'
 
-debug()
+const CYCLE_DEVELOPER_TOOLS = 'dfgplfmhhmdekalbpejekgfegkonjpfp'
 
 let window = null
 let firstRun = true
@@ -29,6 +29,8 @@ app.on('ready', () => {
 })
 
 if (process.env.NODE_ENV === 'development') {
+  debug()
+
   webpack(config).watch({}, (err, stats) => {
     if (err) {
       console.error(err)
@@ -36,7 +38,7 @@ if (process.env.NODE_ENV === 'development') {
       process.stdout.write(stats.toString({ colors: true }))
 
       if (firstRun) {
-        installExtension(REACT_DEVELOPER_TOOLS)
+        installExtension(CYCLE_DEVELOPER_TOOLS)
           .then((name) => {
             window.show()
             window.focus()
@@ -46,8 +48,10 @@ if (process.env.NODE_ENV === 'development') {
       }
 
       if (!stats.hasErrors()) {
-        window.loadURL(`file://${__dirname}/src/index.html`)
+        window.loadURL(`file://${__dirname}/main.html`)
       }
+
+      firstRun = false
     }
   })
 }

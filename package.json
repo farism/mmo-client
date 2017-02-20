@@ -7,7 +7,7 @@
     "build:main": "NODE_ENV=production ELECTRON_TYPE=main webpack",
     "build:renderer": "NODE_ENV=production ELECTRON_TYPE=renderer webpack",
     "build": "yarn build:main && yarn build:renderer",
-    "dev": "NODE_ENV=development electron -r babel-register ./main.js",
+    "dev": "NODE_ENV=development electron -r babel-register ./src/main.js",
     "test": "jest --config .jestrc"
   },
   "repository": {},
@@ -57,6 +57,10 @@
     "webpack": "^2.2.1"
   },
   "dependencies": {
+    "@cycle/dom": "^14.3.0",
+    "@cycle/isolate": "^1.4.0",
+    "@cycle/xstream-run": "^4.2.0",
+    "@types/classnames": "^0.0.32",
     "@types/dotenv": "^2.0.20",
     "@types/node": "^7.0.5",
     "@types/phoenix": "^0.0.4",
@@ -68,8 +72,12 @@
     "@types/reselect": "^2.0.27",
     "@types/three": "^0.83.1",
     "@types/webrtc": "^0.0.21",
+    "babel-plugin-syntax-jsx": "^6.18.0",
+    "babel-plugin-transform-react-jsx": "^6.23.0",
+    "classnames": "^2.2.5",
     "csstips": "^0.2.0",
     "csx": "^8.2.1",
+    "cycle-onionify": "^2.4.0",
     "discord.js": "^11.0.0",
     "dotenv": "^4.0.0",
     "electron": "^1.4.15",
@@ -86,7 +94,9 @@
     "recompose": "^0.22.0",
     "redux": "^3.6.0",
     "reselect": "^2.5.4",
+    "snabbdom-jsx": "^0.3.1",
     "three": "^0.84.0",
-    "typestyle": "^1.0.0"
+    "typestyle": "^1.0.0",
+    "xstream": "^10.2.0"
   }
 }

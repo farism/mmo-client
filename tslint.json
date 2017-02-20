@@ -9,6 +9,7 @@
     "interface-name": false,
     "no-unused-expression": false,
     "object-literal-sort-keys": false,
+    "object-curly-spacing": [true, "never"],
     "one-variable-per-declaration": false
   }
 }

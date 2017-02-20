@@ -9,15 +9,14 @@ const {
 const base = {
   module: {
     rules: [
-      { test: /\.jsx?$/, loader: 'babel-loader', exclude: /node_modules/ },
-      { test: /\.tsx?/, loader: 'ts-loader', exclude: /node_modules/ },
+      { test: /\.ts?/, loader: 'ts-loader', exclude: /node_modules/ },
       { test: /\.scss$/, loaders: ['style-loader', 'css-loader', 'postcss-loader'] },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.md$/, loader: 'ignore-loader' },
     ],
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+    extensions: ['.js', '.ts', '.json'],
     mainFields: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
   },
   plugins: [
@@ -36,7 +35,7 @@ const targets = {
       ...base,
       target: 'electron',
       devtool: 'cheap-module-eval-source-map',
-      entry: './main.js',
+      entry: './src/main.js',
       output: {
         path: path.join(__dirname, 'dist'),
         filename: 'main.development.js',
@@ -51,7 +50,7 @@ const targets = {
     production: {
       ...base,
       target: 'electron',
-      entry: './main.js',
+      entry: './src/main.js',
       output: {
         path: path.join(__dirname, 'dist'),
         filename: 'main.production.js',
@@ -69,7 +68,7 @@ const targets = {
       ...base,
       target: 'electron-renderer',
       devtool: 'cheap-module-eval-source-map',
-      entry: './renderer.js',
+      entry: './src/renderer.ts',
       output: {
         path: path.join(__dirname, 'dist'),
         filename: 'renderer.development.js',
@@ -84,7 +83,7 @@ const targets = {
     production: {
       ...base,
       target: 'electron-renderer',
-      entry: './renderer.js',
+      entry: './src/renderer.ts',
       output: {
         path: path.join(__dirname, 'dist'),
         filename: 'renderer.production.js',
