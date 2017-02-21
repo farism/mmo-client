@@ -1,6 +1,7 @@
 {
-  "extends": ["tslint:latest", "tslint-react"],
+  "extends": ["tslint:latest"],
   "rules": {
+    "arrow-parens": [true, "ban-single-arg-parens"],
     "indent": [true, "spaces"],
     "semicolon": [true, "never", "ignore-interfaces"],
     "quotemark": [true, "single"],

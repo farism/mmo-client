@@ -6,6 +6,6 @@ import view from './view'
 
 export default function Root(sources) {
   return {
-    DOM: view(sources.state$).DOM,
+    DOM: view(sources).DOM,
   }
 }
