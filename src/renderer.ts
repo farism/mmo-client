@@ -73,26 +73,16 @@ function Renderer(sources) {
   const outgoingChat$ = action$
     .filter(ac => ac.type === 'sendMessage')
     .map(ac => ac.payload)
-  // const incomingChat$ = sources.phoenix
-  //   .startWith('')
-
-  // console.log(sources.phoenix.channel())
-
-  const sock$ = sources
-    .phoenix
-    .socket$()
-    .startWith({})
 
   const chan$ = sources
     .phoenix
-    .presence$('world:lobby')
+    .presences('world:lobby')
     .startWith({})
 
   return {
     onion: reducer$,
     phoenix: outgoingChat$,
     DOM: xs.combine(state$, chan$).map(([state, channel]) => {
-      console.log(channel)
       return div([
         input('.input', {attrs: {type: 'text'}}),
         UI(sources).DOM,

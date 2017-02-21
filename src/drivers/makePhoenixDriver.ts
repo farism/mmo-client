@@ -1,31 +1,45 @@
-import {Channel, Socket} from 'phoenix'
-import xs, {Stream} from 'xstream'
+import {Channel, Presence, Socket} from 'phoenix'
+import xs, {MemoryStream, Stream} from 'xstream'
 
 interface Options {
-  params?: {}
+  params?: object;
 }
 
 interface SocketMessage {
   event: string;
-  payload: {};
+  payload: object;
   ref?: string;
   topic: string;
 }
 
+interface PresenceUserMeta {
+  name: string;
+  online_at: number;
+  phx_ref: string;
+}
+
+interface PresenceUser {
+  metas: PresenceUserMeta[];
+}
+
+interface PresenceMap {
+  [key: string]: PresenceUser;
+}
+
 class PhoenixSource {
-  private channels: {[key: string]: Channel}
-  private socket: Socket
+  private chans: {[key: string]: Channel}
+  private sock: Socket
 
   constructor(url: string, opts: Options) {
-    this.channels = {}
-    this.socket = new Socket(url, opts)
-    this.socket.connect()
+    this.chans = {}
+    this.sock = new Socket(url, opts)
+    this.sock.connect()
   }
 
-  public socket$ = (): Stream<SocketMessage> => {
+  public socket = (): Stream<SocketMessage> => {
     return xs.create<SocketMessage>({
       start: listener => {
-        this.socket.onMessage(message => {
+        this.sock.onMessage(message => {
           listener.next(message)
         })
       },
@@ -33,28 +47,39 @@ class PhoenixSource {
     })
   }
 
-  public channel$ = (topic: string): Stream<SocketMessage> => {
-    if (!this.channels[topic]) {
-      this.channels[topic] = this.socket.channel(topic)
-      this.channels[topic].join()
+  public channels = (topic: string): Stream<SocketMessage> => {
+    if (!this.chans[topic]) {
+      this.chans[topic] = this.sock.channel(topic)
+      this.chans[topic].join()
     }
 
-    return this.socket$().filter(message => message.topic === topic)
+    return this.socket().filter(message => message.topic === topic)
   }
 
-  public message$ = (topic: string): Stream<SocketMessage> => {
-    return this.channel$(topic)
+  public messages = (topic: string): MemoryStream<SocketMessage[]> => {
+    return this.channels(topic)
       .filter(message => message.event === 'message')
+      .fold((acc, message): SocketMessage[] => [...acc, message].slice(), [])
   }
 
-  public presence$ = (topic: string): Stream<SocketMessage> => {
-    return this.channel$(topic)
-      .filter(message => message.event === 'presence_state' || message.event === 'presence_diff')
+  public presences = (topic: string): MemoryStream<PresenceMap> => {
+    return this.channels(topic)
+      .filter(message => message.event === 'presence_diff')
+      .fold((acc, message): PresenceMap => Presence.syncDiff(acc, message.payload), {})
+      .map(presences => Presence.list(presences, (id, {metas: [first]}) => ({...first, id})))
   }
 }
 
 export default function makePhoenixDriver(url: string, opts: Options) {
   return function phoenixDriver(outgoing$) {
+    outgoing$.addListener({
+      next: payload => {
+        console.log(payload)
+      },
+      error: () => {},
+      complete: () => {},
+    })
+
     return new PhoenixSource(url, opts)
   }
 }
