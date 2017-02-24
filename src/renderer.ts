@@ -1,4 +1,4 @@
-import {div, input, makeDOMDriver} from '@cycle/dom'
+import {div, DOMSource, input, makeDOMDriver, VNode} from '@cycle/dom'
 import {run} from '@cycle/xstream-run'
 import onionify from 'cycle-onionify'
 import * as dotenv from 'dotenv'
@@ -6,36 +6,52 @@ import xs, {Stream} from 'xstream'
 dotenv.config()
 
 import UI from './components/ui'
-import makePhoenixDriver from './drivers/makePhoenixDriver'
+import makePhoenixDriver, {PhoenixSource} from './drivers/makePhoenixDriver'
 
-type Action = {
-  type: string;
-  payload: any;
+interface RendererSource {
+  DOM: DOMSource;
+  phoenix: PhoenixSource;
+  onion: any;
 }
 
-function intent(DOM): Stream<Action> {
-  const updateInputValueAction$: Stream<Action> =
+interface RendererSink {
+  DOM?: Stream<VNode>;
+  phoenix?: any;
+  onion?: any;
+}
+
+interface Action {
+  type: string;
+  payload: Object;
+}
+
+type ActionStream = Stream<Action>
+
+type ReducerStream = Stream<Object>
+
+function intent(DOM: DOMSource): ActionStream {
+  const updateInputValueAction$: ActionStream =
     DOM.select('.input')
       .events('input')
       .map(ev => ev.target.value)
-      .map(payload => ({type: 'updateInputValue', payload}))
+      .map((payload): Action => ({type: 'updateInputValue', payload}))
 
-  const sendMessageAction$: Stream<Action> =
+  const sendMessageAction$: ActionStream =
     DOM.select('.input')
       .events('keydown')
       .filter(ev => {
         return ev.keyCode === 13
       })
       .map(ev => ev.target.value)
-      .map(payload => ({type: 'sendMessage', payload}))
+      .map((payload): Action => ({type: 'sendMessage', payload}))
 
-  return xs.merge(
+  return xs.merge<Action>(
     updateInputValueAction$,
     sendMessageAction$,
   )
 }
 
-function model(action$) {
+function model(action$: ActionStream): ReducerStream {
   const initialReducer$ = xs.of(function initialReducer(state) {
     return {
       inputValue: '',
@@ -51,38 +67,27 @@ function model(action$) {
       }
     })
 
-  const sendChatMessageReducer$ = action$
-    .filter(ac => ac.type === 'sendMessage')
-    .map(ac => function sendChatMessageReducer(state) {
-      return {
-        ...state,
-      }
-    })
-
   return xs.merge(
     initialReducer$,
     updateInputValueReducer$,
-    sendChatMessageReducer$,
   )
 }
 
-function Renderer(sources) {
+function Renderer(sources: RendererSource): RendererSink {
   const state$ = sources.onion.state$
   const action$ = intent(sources.DOM)
   const reducer$ = model(action$)
-  const outgoingChat$ = action$
-    .filter(ac => ac.type === 'sendMessage')
-    .map(ac => ac.payload)
 
-  const chan$ = sources
+  const presence$ = sources
     .phoenix
     .presences('world:lobby')
-    .startWith({})
+    .startWith([])
 
   return {
     onion: reducer$,
-    phoenix: outgoingChat$,
-    DOM: xs.combine(state$, chan$).map(([state, channel]) => {
+    // phoenix: outgoing$,
+    DOM: xs.combine(state$, presence$).map(([state, presences]) => {
+      // console.log(presences)
       return div([
         input('.input', {attrs: {type: 'text'}}),
         UI(sources).DOM,
