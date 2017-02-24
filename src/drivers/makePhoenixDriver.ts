@@ -5,6 +5,22 @@ interface Options {
   params?: Object;
 }
 
+interface PresenceMeta {
+  name: string;
+  online_at: number;
+  phx_ref: string;
+}
+
+interface Presence extends PresenceMeta {
+  id: string;
+}
+
+interface PresenceMap {
+  [id: string]: {
+    metas: PresenceMeta[];
+  };
+}
+
 interface SocketMessage {
   event: string;
   payload: Object;
@@ -12,28 +28,22 @@ interface SocketMessage {
   topic: string;
 }
 
-interface PresenceUserMeta {
-  name: string;
-  online_at: number;
-  phx_ref: string;
+interface PresenceStateMessage extends SocketMessage {
+  payload: PresenceMap;
 }
 
-interface PresenceUser {
-  metas: PresenceUserMeta[];
+interface PresenceDiffMessage extends SocketMessage {
+  payload: {
+    joins: PresenceMap;
+    leaves: PresenceMap;
+  };
 }
 
-interface PresenceMap {
-  [key: string]: PresenceUser;
-}
-
-function syncPresence(event: string, prev: Object, next: Object): PresenceMap {
-  if (event === 'presence_state') {
-    return Presence.syncState(prev, next)
-  } else if (event === 'presence_diff') {
-    return Presence.syncDiff(prev, next)
+function listBy(id: string, payload: { metas: PresenceMeta[] }): Presence {
+  return {
+    id,
+    ...payload.metas[0],
   }
-
-  return {}
 }
 
 export class PhoenixSource {
@@ -72,11 +82,18 @@ export class PhoenixSource {
       .fold((acc, message): SocketMessage[] => [...acc, message], [])
   }
 
-  public presences = (topic: string): MemoryStream<PresenceMap[]> => {
-    return this.channels(topic)
-      .filter(({event}) => event === 'presence_state' || event === 'presence_diff')
-      .fold((acc, {event, payload}): PresenceMap => syncPresence(event, acc, payload), {})
-      .map(presences => Presence.list(presences, (id, {metas: [first]}) => ({...first, id})))
+  public presences = (topic: string): MemoryStream<Presence[]> => {
+    const state$ = this.channels(topic)
+      .filter(message => message.event === 'presence_state')
+      .fold((acc, message) => Presence.syncState(acc, message.payload), {})
+      .map(presences => Presence.list(presences, listBy) as Presence[])
+
+    const diff$ = this.channels(topic)
+      .filter(message => message.event === 'presence_diff')
+      .fold((acc, message) => Presence.syncDiff(acc, message.payload), {})
+      .map(presences => Presence.list(presences, listBy) as Presence[])
+
+    return xs.merge(state$, diff$) as MemoryStream<Presence[]>
   }
 }
 

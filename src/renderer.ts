@@ -87,7 +87,7 @@ function Renderer(sources: RendererSource): RendererSink {
     onion: reducer$,
     // phoenix: outgoing$,
     DOM: xs.combine(state$, presence$).map(([state, presences]) => {
-      // console.log(presences)
+      console.log(presences)
       return div([
         input('.input', {attrs: {type: 'text'}}),
         UI(sources).DOM,
