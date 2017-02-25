@@ -15,28 +15,21 @@ interface Presence extends PresenceMeta {
   id: string;
 }
 
+interface Message extends PresenceMeta {
+  id: string;
+}
+
 interface PresenceMap {
   [id: string]: {
     metas: PresenceMeta[];
   };
 }
 
-interface SocketMessage {
+interface Message {
   event: string;
   payload: Object;
   ref?: string;
   topic: string;
-}
-
-interface PresenceStateMessage extends SocketMessage {
-  payload: PresenceMap;
-}
-
-interface PresenceDiffMessage extends SocketMessage {
-  payload: {
-    joins: PresenceMap;
-    leaves: PresenceMap;
-  };
 }
 
 function listBy(id: string, payload: { metas: PresenceMeta[] }): Presence {
@@ -53,11 +46,55 @@ export class PhoenixSource {
   constructor(url: string, opts: Options) {
     this.chans = {}
     this.sock = new Socket(url, opts)
+    this.connect()
+  }
+
+  public connect = () => {
     this.sock.connect()
   }
 
-  public socket = (): Stream<SocketMessage> => {
-    return xs.create<SocketMessage>({
+  public disconnect = () => {
+    this.sock.connect()
+  }
+
+  public join = (topic: string) => {
+    if (!this.chans[topic]) {
+      this.chans[topic] = this.sock.channel(topic)
+      this.chans[topic].join()
+    }
+  }
+
+  public leave = (topic: string) => {
+    if (this.chans[topic]) {
+      this.chans[topic].leave()
+    }
+  }
+
+  public socket$ = (): Stream<[Presence[], Message[]]> => {
+    const presenceState$ = this.socket()
+      .filter(message => message.event === 'presence_state')
+      .fold((acc, message) => Presence.syncState(acc, message.payload), {})
+      .map(presences => Presence.list(presences, listBy) as Presence[])
+      .startWith([])
+
+    const presenceDiff$ = this.socket()
+      .filter(message => message.event === 'presence_diff')
+      .fold((acc, message) => Presence.syncDiff(acc, message.payload), {})
+      .map(presences => Presence.list(presences, listBy) as Presence[])
+      .startWith([])
+
+    const presences$ = xs.merge(presenceState$, presenceDiff$)
+
+    const chat$ = this.socket()
+      .filter(message => message.event === 'message')
+      .fold((acc, message) => [...acc, message], [] as Message[])
+      .startWith([])
+
+    return xs.combine(presences$, chat$)
+  }
+
+  private socket = (): Stream<Message> => {
+    return xs.create<Message>({
       start: listener => {
         this.sock.onMessage(message => {
           listener.next(message)
@@ -66,35 +103,6 @@ export class PhoenixSource {
       stop: () => {},
     })
   }
-
-  public channels = (topic: string): Stream<SocketMessage> => {
-    if (!this.chans[topic]) {
-      this.chans[topic] = this.sock.channel(topic)
-      this.chans[topic].join()
-    }
-
-    return this.socket().filter(message => message.topic === topic)
-  }
-
-  public messages = (topic: string): MemoryStream<SocketMessage[]> => {
-    return this.channels(topic)
-      .filter(message => message.event === 'message')
-      .fold((acc, message): SocketMessage[] => [...acc, message], [])
-  }
-
-  public presences = (topic: string): MemoryStream<Presence[]> => {
-    const state$ = this.channels(topic)
-      .filter(message => message.event === 'presence_state')
-      .fold((acc, message) => Presence.syncState(acc, message.payload), {})
-      .map(presences => Presence.list(presences, listBy) as Presence[])
-
-    const diff$ = this.channels(topic)
-      .filter(message => message.event === 'presence_diff')
-      .fold((acc, message) => Presence.syncDiff(acc, message.payload), {})
-      .map(presences => Presence.list(presences, listBy) as Presence[])
-
-    return xs.merge(state$, diff$) as MemoryStream<Presence[]>
-  }
 }
 
 export default function makePhoenixDriver(url: string, opts: Options) {
@@ -102,9 +110,7 @@ export default function makePhoenixDriver(url: string, opts: Options) {
     const source = new PhoenixSource(url, opts)
 
     outgoing$.addListener({
-      next: ac => console.log(ac),
-      error: err => {},
-      complete: () => {},
+      next: (ac) => console.log(ac)
     })
 
     return source
