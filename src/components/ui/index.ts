@@ -1,18 +1,15 @@
 import {DOMSource, VNode} from '@cycle/dom'
-import isolate from '@cycle/isolate'
 import {StateSource} from 'cycle-onionify'
 import xs, {Stream} from 'xstream'
 
-import Chat, {Sinks as ChatSinks, State as ChatState} from '../chat'
+import {IAction} from '../../utils/actionCreatorFactory'
+import isolateChildren from '../../utils/isolateChildren'
+import Chat from '../chat'
 import intent from './intent'
 import model from './model'
 import view from './view'
 
-export interface State {
-  chat: ChatState;
-}
-
-export type Reducer = (prev?: State) => State | undefined
+import {Reducer, State} from './model'
 
 export interface Sources {
   DOM: DOMSource;
@@ -21,21 +18,21 @@ export interface Sources {
 
 export interface Sinks {
   DOM: Stream<VNode>;
-  onion?: Stream<Reducer>;
+  onion: Stream<Reducer>;
+  phoenix: Stream<IAction>;
 }
 
 export default function UI(sources: Sources) {
-  const chat = isolate(Chat, 'chat')(sources)
+  const children = isolateChildren(sources, {
+    chat: Chat,
+  })
   const state$ = sources.onion.state$
   const action$ = intent(sources.DOM)
-  const reducer$ = xs.merge(
-    model(action$),
-    // chat.onion,
-  )
-  const vdom$ = view(state$)
+  const reducer$ = model(action$)
 
   return {
-    DOM: vdom$,
-    onion: reducer$,
+    DOM: view(state$, children.vnodes$),
+    onion: xs.merge(reducer$, children.reducers$),
+    phoenix: children.sinks.chat.phoenix,
   }
 }

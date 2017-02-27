@@ -3,7 +3,8 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "es6",
-    "compileOnSave": false
+    "compileOnSave": false,
+    "noImplicitAny": true
   },
   "exclude": [
     "node_modules",

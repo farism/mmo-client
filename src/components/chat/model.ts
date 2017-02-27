@@ -1,24 +1,34 @@
-import {isType} from 'redux-typescript-actions'
 import xs, {Stream} from 'xstream'
 
-import {Action} from './intent'
+import {IAction} from '../../utils/actionCreatorFactory'
+import checkActionType from '../../utils/checkActionType'
+import {changeInput, sendInput} from './intent'
 
 export interface State {
-  inputValue: Object;
+  inputValue: string;
 }
 
 export type Reducer = (prev?: State) => State | undefined
 
-export default function model(action$: Stream<Action>): Stream<Reducer> {
+export default function model(action$: Stream<IAction>): Stream<Reducer> {
   const defaultReducer$ = xs.of(function initialReducer(prev?: State): State {
     return prev || {
       inputValue: '',
     }
   })
 
-  const changeInput$ = action$
-    .filter(ac => ac.type === 'CHANGE_INPUT')
+  const changeInputReducer$ = action$
+    .compose(checkActionType(changeInput))
     .map(ac => function changeInputReducer(prev?: State): State {
+      return {
+        ...prev,
+        inputValue: ac.payload.value,
+      }
+    })
+
+  const sendInputReducer$ = action$
+    .compose(checkActionType(sendInput))
+    .map(ac => function sendInputReducer(prev?: State): State {
       return {
         ...prev,
         inputValue: '',
@@ -27,6 +37,7 @@ export default function model(action$: Stream<Action>): Stream<Reducer> {
 
   return xs.merge(
     defaultReducer$,
-    // changeInput$,
+    changeInputReducer$,
+    sendInputReducer$,
   )
 }
