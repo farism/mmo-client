@@ -29,20 +29,15 @@ export default function App(sources: Sources): Sinks {
     ui.onion,
   )
 
-  const message$ = sources
-    .phoenix
-    .message$()
-
-  const presence$ = sources
-    .phoenix
-    .presence$()
+  // const presence$ = sources
+  //   .phoenix
+  //   .presence$()
 
   return {
-    DOM: xs.combine(state$, message$, ui.DOM).map(([state, messages, uiVNode]) => {
+    DOM: xs.combine(state$, ui.DOM).map(([state, uiVNode]) => {
       return div('.app', [
         'app',
         uiVNode,
-        ul('.messages', messages.map(message => li('.message', message.payload.value))),
       ])
     }),
     onion: reducer$,

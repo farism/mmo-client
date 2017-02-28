@@ -2,7 +2,7 @@ import {DOMSource, VNode} from '@cycle/dom'
 import {StateSource} from 'cycle-onionify'
 import xs, {MemoryStream, Stream} from 'xstream'
 
-import PhoenixSource, {Message} from '../../drivers/phoenix/PhoenixSource'
+import {Message} from '../../drivers/phoenix/PhoenixSource'
 import checkActionType from '../../utils/checkActionType'
 import intent, {sendInput} from './intent'
 import model, {Reducer, State} from './model'
@@ -13,11 +13,10 @@ export {State} from './model'
 export interface Sources {
   DOM: DOMSource;
   onion: StateSource<State>;
-  phoenix: PhoenixSource;
 }
 
 export interface Sinks {
-  DOM: Stream<VNode>;
+  DOM: MemoryStream<VNode>;
   onion: Stream<Reducer>;
   phoenix: Stream<Message>;
 }
@@ -26,12 +25,9 @@ export default function Chat(sources: Sources): Sinks {
   const state$ = sources.onion.state$
   const action$ = intent(sources.DOM)
   const reducer$ = model(action$)
+  const vdom$ = view(state$)
 
-  const receive$ = sources
-    .phoenix
-    .message$()
-
-  const push$ = action$
+  const outgoing$ = action$
     .compose(checkActionType(sendInput))
     .map(ac => ({
       event: 'message',
@@ -40,11 +36,9 @@ export default function Chat(sources: Sources): Sinks {
       ref: null,
     } as Message))
 
-  const vdom$ = view(state$, receive$)
-
   return {
     DOM: vdom$,
     onion: reducer$,
-    phoenix: push$,
+    phoenix: outgoing$,
   }
 }

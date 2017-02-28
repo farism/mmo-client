@@ -10,7 +10,6 @@ const base = {
   module: {
     rules: [
       { test: /\.ts?/, loader: 'ts-loader', exclude: /node_modules/ },
-      { test: /\.scss$/, loaders: ['style-loader', 'css-loader', 'postcss-loader'] },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.md$/, loader: 'ignore-loader' },
     ],

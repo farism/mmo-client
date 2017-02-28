@@ -1,9 +1,11 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, systemPreferences } from 'electron'
 import debug from 'electron-debug'
 import installExtension from 'electron-devtools-installer'
 import webpack from 'webpack'
 
 import config from '../webpack.config.babel'
+
+systemPreferences.setUserDefault('ApplePressAndHoldEnabled', 'boolean', false)
 
 const CYCLE_DEVELOPER_TOOLS = 'dfgplfmhhmdekalbpejekgfegkonjpfp'
 

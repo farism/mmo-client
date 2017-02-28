@@ -6,6 +6,7 @@ dotenv.config()
 
 import App from './components/app'
 import {makePhoenixDriver} from './drivers/phoenix'
+import './styles/reset'
 
 const sources = {
   DOM: makeDOMDriver('#app'),
