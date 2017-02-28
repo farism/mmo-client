@@ -3,7 +3,7 @@ import xs, {Stream} from 'xstream'
 
 export interface Message {
   event: string;
-  payload: Object;
+  payload: any;
   ref?: string;
   topic: string;
 }

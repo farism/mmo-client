@@ -1,4 +1,4 @@
-import {div, DOMSource, VNode} from '@cycle/dom'
+import {div, DOMSource, li, ul, VNode} from '@cycle/dom'
 import isolate from '@cycle/isolate'
 import xs, {Stream} from 'xstream'
 
@@ -39,10 +39,10 @@ export default function App(sources: Sources): Sinks {
 
   return {
     DOM: xs.combine(state$, message$, ui.DOM).map(([state, messages, uiVNode]) => {
-      console.log(messages)
       return div('.app', [
         'app',
         uiVNode,
+        ul('.messages', messages.map(message => li('.message', message.payload.value))),
       ])
     }),
     onion: reducer$,
