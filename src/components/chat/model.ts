@@ -21,7 +21,7 @@ export default function model(action$: Stream<IAction>): Stream<Reducer> {
 
   const setAutoScrollReducer$ = action$
     .compose(checkActionType(setAutoScroll))
-    .map(ac => function changeInputReducer(prev?: State): State {
+    .map(ac => function autoScrollReducer(prev?: State): State {
       return {
         ...prev,
         autoScroll: ac.payload.autoScroll,
