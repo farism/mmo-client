@@ -1,7 +1,11 @@
 module Main exposing (..)
 
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import UI
+import Html exposing (..)
+import Html.Events exposing (..)
+import Debug exposing (..)
+import List exposing (length)
+
 
 main =
     Html.beginnerProgram
@@ -11,16 +15,17 @@ main =
         }
 
 
+
 -- MODE
 
 
 type alias Model =
-    Int
+    { ui : UI.Model }
 
 
 model : Model
 model =
-    0
+    { ui = UI.model }
 
 
 
@@ -28,18 +33,14 @@ model =
 
 
 type Msg
-    = Increment
-    | Decrement
+    = UI UI.Msg
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Increment ->
-            model + 1
-
-        Decrement ->
-            model - 1
+        UI subMsg ->
+            { model | ui = UI.update subMsg model.ui }
 
 
 
@@ -49,7 +50,5 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick Decrement ] [ text "-" ]
-        , div [] [ text (toString model) ]
-        , button [ onClick Increment ] [ text "+" ]
+        [ Html.map UI (UI.view model.ui)
         ]

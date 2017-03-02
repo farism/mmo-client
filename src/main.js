@@ -34,15 +34,15 @@ if (process.env.NODE_ENV === 'development') {
       output: "dist/main.js"
     })
     .on('close', (exitCode) => {
-      if (firstRun) {
-        window.show()
-        window.focus()
-        window.openDevTools()
-        firstRun = false
-      }
-
       if (exitCode === 0) {
         window.loadURL(`file://${__dirname}/main.html`)
+
+        if (firstRun) {
+          window.show()
+          window.focus()
+          window.openDevTools()
+          firstRun = false
+        }
       }
     })
   }
