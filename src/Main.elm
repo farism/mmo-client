@@ -1,13 +1,20 @@
 module Main exposing (..)
 
+import Phoenix
 import UI
 import Html exposing (..)
 import Html.Events exposing (..)
+import WebSocket
 
 
-main : Program Never Model Msg
+type alias Flags =
+    { jwt : String
+    }
+
+
+main : Program Flags Model Msg
 main =
-    Html.program
+    Html.programWithFlags
         { init = init
         , view = view
         , update = update
@@ -20,7 +27,8 @@ main =
 
 
 type alias Model =
-    { ui : UI.Model
+    { flags : Flags
+    , ui : UI.Model
     }
 
 
@@ -30,9 +38,9 @@ type alias Model =
 --     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( Model UI.init, Cmd.none )
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( Model flags UI.init, Cmd.none )
 
 
 
@@ -41,6 +49,7 @@ init =
 
 type Msg
     = UI UI.Msg
+    | Phoenix String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -53,6 +62,9 @@ update msg model =
             in
                 ( { model | ui = ui }, Cmd.map UI uiCmds )
 
+        Phoenix subMsg ->
+            model ! []
+
 
 
 -- SUBSCRIPTIONS
@@ -60,7 +72,11 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    let
+        endpoint =
+            "ws://localhost:4000/socket/websocket?guardian_token=" ++ model.flags.jwt
+    in
+        WebSocket.listen endpoint Phoenix
 
 
 

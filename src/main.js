@@ -4,7 +4,9 @@ import debug from 'electron-debug'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import chokidar from 'chokidar'
 import {compile} from 'node-elm-compiler'
+import dotenv from 'dotenv'
 
+dotenv.config()
 debug()
 
 let window = null

@@ -15,6 +15,8 @@
     <div id="app"></div>
   </body>
   <script type="text/javascript">
-    Elm.Main.fullscreen()
+    Elm.Main.fullscreen({
+      jwt: process.env.JWT,
+    })
   </script>
 </html>
