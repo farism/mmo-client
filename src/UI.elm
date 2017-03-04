@@ -12,9 +12,9 @@ type alias Model =
     { chat : Chat.Model }
 
 
-model : Model
-model =
-    Model (Chat.init [])
+init : Model
+init =
+    Model Chat.init
 
 
 
@@ -25,11 +25,15 @@ type Msg
     = Chat Chat.Msg
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Chat subMsg ->
-            { model | chat = Chat.update subMsg model.chat }
+            let
+                ( chat, chatCmds ) =
+                    Chat.update subMsg model.chat
+            in
+                ( { model | chat = chat }, Cmd.map Chat chatCmds )
 
 
 

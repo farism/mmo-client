@@ -1,7 +1,7 @@
 module Chat exposing (Model, Msg, init, update, view)
 
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (value)
 import Html.Events exposing (..)
 import Json.Decode as Json
 
@@ -21,9 +21,9 @@ type alias Message =
     }
 
 
-init : List Message -> Model
-init messages =
-    Model messages ""
+init : Model
+init =
+    Model [] ""
 
 
 
@@ -35,14 +35,14 @@ type Msg
     | Send
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         UpdateField str ->
-            { model | field = str }
+            { model | field = str } ! []
 
         Send ->
-            { model | field = "" }
+            { model | field = "" } ! []
 
 
 
@@ -52,22 +52,11 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ input
-            [ value model.field
-            , onInput UpdateField
-            , onEnter Send
+        [ form [ onSubmit Send ]
+            [ input
+                [ value model.field
+                , onInput UpdateField
+                ]
+                []
             ]
-            []
         ]
-
-
-onEnter : Msg -> Attribute Msg
-onEnter msg =
-    let
-        isEnter code =
-            if code == 13 then
-                Json.succeed msg
-            else
-                Json.fail "not ENTER"
-    in
-        on "keydown" (Json.andThen isEnter keyCode)

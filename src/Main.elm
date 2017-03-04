@@ -3,29 +3,36 @@ module Main exposing (..)
 import UI
 import Html exposing (..)
 import Html.Events exposing (..)
-import Debug exposing (..)
-import List exposing (length)
 
 
+main : Program Never Model Msg
 main =
-    Html.beginnerProgram
-        { model = model
+    Html.program
+        { init = init
         , view = view
         , update = update
+        , subscriptions = subscriptions
         }
 
 
 
--- MODE
+-- MODEL
 
 
 type alias Model =
-    { ui : UI.Model }
+    { ui : UI.Model
+    }
 
 
-model : Model
-model =
-    { ui = UI.model }
+
+-- type alias Model =
+--     { prop : String
+--     }
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( Model UI.init, Cmd.none )
 
 
 
@@ -36,11 +43,24 @@ type Msg
     = UI UI.Msg
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         UI subMsg ->
-            { model | ui = UI.update subMsg model.ui }
+            let
+                ( ui, uiCmds ) =
+                    UI.update subMsg model.ui
+            in
+                ( { model | ui = ui }, Cmd.map UI uiCmds )
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
 
 
 
