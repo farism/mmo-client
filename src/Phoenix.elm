@@ -1,5 +1,14 @@
 module Phoenix exposing (..)
 
+import Dict exposing (..)
 
-type Msg
-    = Push
+
+type alias Socket =
+    { url : String
+    , channels : Dict String Channel
+    }
+
+
+type alias Channel =
+    { name : String
+    }

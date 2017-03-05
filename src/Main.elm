@@ -1,9 +1,9 @@
 module Main exposing (..)
 
-import Phoenix
+import Chat
 import UI
+import Phoenix exposing (..)
 import Html exposing (..)
-import Html.Events exposing (..)
 import WebSocket
 
 
@@ -28,14 +28,10 @@ main =
 
 type alias Model =
     { flags : Flags
-    , ui : UI.Model
+    , ui :
+        UI.Model
+        -- , socket : Phoenix.Socket
     }
-
-
-
--- type alias Model =
---     { prop : String
---     }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -63,7 +59,7 @@ update msg model =
                 ( { model | ui = ui }, Cmd.map UI uiCmds )
 
         Phoenix subMsg ->
-            model ! []
+            (model |> Debug.log "phx") ! []
 
 
 
@@ -72,11 +68,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    let
-        endpoint =
-            "ws://localhost:4000/socket/websocket?guardian_token=" ++ model.flags.jwt
-    in
-        WebSocket.listen endpoint Phoenix
+    WebSocket.listen (endpoint model.flags.jwt) Phoenix
 
 
 
@@ -88,3 +80,8 @@ view model =
     div []
         [ Html.map UI (UI.view model.ui)
         ]
+
+
+endpoint : String -> String
+endpoint jwt =
+    "ws://localhost:4000/socket/websocket?guardian_token=" ++ jwt

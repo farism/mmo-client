@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (value)
 import Html.Events exposing (..)
 import Json.Decode as Json
+import WebSocket
 
 
 -- MODE
@@ -32,16 +33,16 @@ init =
 
 type Msg
     = UpdateField String
-    | Send
+    | Send String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        UpdateField str ->
-            { model | field = str } ! []
+        UpdateField input ->
+            { model | field = input } ! []
 
-        Send ->
+        Send input ->
             { model | field = "" } ! []
 
 
@@ -52,7 +53,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ form [ onSubmit Send ]
+        [ form [ onSubmit (Send model.field) ]
             [ input
                 [ value model.field
                 , onInput UpdateField
