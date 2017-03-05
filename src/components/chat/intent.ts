@@ -1,7 +1,6 @@
 import {DOMSource} from '@cycle/dom'
+import actionCreatorFactory, {AnyAction} from 'typescript-fsa'
 import xs, {Stream} from 'xstream'
-
-import actionCreatorFactory, {IAction} from '../../utils/actionCreatorFactory'
 
 const actionCreator = actionCreatorFactory('chat')
 
@@ -22,7 +21,7 @@ function isScrollAtBottom(ev: Event) {
   return contentHeight - elementHeight === scrollPosition
 }
 
-export default function intent(DOM: DOMSource): Stream<IAction> {
+export default function intent(DOM: DOMSource): Stream<AnyAction> {
   const scroll$ = DOM
     .select('.pane')
     .events('scroll')

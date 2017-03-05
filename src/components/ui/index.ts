@@ -1,8 +1,8 @@
 import {DOMSource, VNode} from '@cycle/dom'
 import {StateSource} from 'cycle-onionify'
+import {AnyAction} from 'typescript-fsa'
 import xs, {Stream} from 'xstream'
 
-import {IAction} from '../../utils/actionCreatorFactory'
 import isolateChildren from '../../utils/isolateChildren'
 import Chat from '../chat'
 import intent from './intent'
@@ -19,7 +19,7 @@ export interface Sources {
 export interface Sinks {
   DOM: Stream<VNode>;
   onion: Stream<Reducer>;
-  phoenix: Stream<IAction>;
+  phoenix: Stream<AnyAction>;
 }
 
 export default function UI(sources: Sources) {

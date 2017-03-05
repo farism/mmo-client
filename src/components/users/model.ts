@@ -1,6 +1,6 @@
+import {AnyAction} from 'typescript-fsa'
 import xs, {Stream} from 'xstream'
 
-import {IAction} from '../../utils/actionCreatorFactory'
 import checkActionType from '../../utils/checkActionType'
 import {changeInput, sendInput} from './intent'
 
@@ -10,7 +10,7 @@ export interface State {
 
 export type Reducer = (prev?: State) => State | undefined
 
-export default function model(action$: Stream<IAction>): Stream<Reducer> {
+export default function model(action$: Stream<AnyAction>): Stream<Reducer> {
   const defaultReducer$ = xs.of(function initialReducer(prev?: State): State {
     return prev || {
       inputValue: '',
