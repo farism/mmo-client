@@ -1,10 +1,8 @@
 module Main exposing (..)
 
-import Chat
 import UI
-import Phoenix exposing (..)
+import Phoenix.Socket as Socket exposing (..)
 import Html exposing (..)
-import WebSocket
 
 
 type alias Flags =
@@ -28,15 +26,22 @@ main =
 
 type alias Model =
     { flags : Flags
-    , ui :
-        UI.Model
-        -- , socket : Phoenix.Socket
+    , socket : Socket Msg
+    , ui : UI.Model
+    }
+
+
+model : Flags -> Model
+model flags =
+    { flags = flags
+    , socket = Socket.init (endpoint flags.jwt)
+    , ui = UI.init
     }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( Model flags UI.init, Cmd.none )
+    ( model flags, Cmd.none )
 
 
 
@@ -45,7 +50,7 @@ init flags =
 
 type Msg
     = UI UI.Msg
-    | Phoenix String
+    | Phoenix (Socket.Msg Msg)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -68,7 +73,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    WebSocket.listen (endpoint model.flags.jwt) Phoenix
+    Socket.listen model.socket Phoenix
 
 
 
@@ -83,5 +88,5 @@ view model =
 
 
 endpoint : String -> String
-endpoint jwt =
-    "ws://localhost:4000/socket/websocket?guardian_token=" ++ jwt
+endpoint token =
+    "ws://localhost:4000/socket/websocket?guardian_token=" ++ token
