@@ -1,8 +1,9 @@
 module Main exposing (..)
 
+import Socket exposing (init, listen, Msg(..))
 import UI
-import Phoenix.Socket as Socket exposing (..)
 import Html exposing (..)
+import WebSocket
 
 
 type alias Flags =
@@ -26,7 +27,6 @@ main =
 
 type alias Model =
     { flags : Flags
-    , socket : Socket Msg
     , ui : UI.Model
     }
 
@@ -34,7 +34,6 @@ type alias Model =
 model : Flags -> Model
 model flags =
     { flags = flags
-    , socket = Socket.init (endpoint flags.jwt)
     , ui = UI.init
     }
 
@@ -50,7 +49,7 @@ init flags =
 
 type Msg
     = UI UI.Msg
-    | Phoenix (Socket.Msg Msg)
+    | Message Socket.Receive
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -63,8 +62,12 @@ update msg model =
             in
                 ( { model | ui = ui }, Cmd.map UI uiCmds )
 
-        Phoenix subMsg ->
-            (model |> Debug.log "phx") ! []
+        Message value ->
+            let
+                log =
+                    Debug.log "message" value
+            in
+                ( model, Cmd.none )
 
 
 
@@ -73,7 +76,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Socket.listen model.socket Phoenix
+    Socket.listen "ws://echo.websocket.org" Message
 
 
 
@@ -87,6 +90,7 @@ view model =
         ]
 
 
-endpoint : String -> String
-endpoint token =
-    "ws://localhost:4000/socket/websocket?guardian_token=" ++ token
+
+-- endpoint : String -> String
+-- endpoint token =
+--     "ws://localhost:4000/socket/websocket?guardian_token=" ++ token

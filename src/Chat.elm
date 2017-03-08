@@ -40,10 +40,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         UpdateField input ->
-            { model | field = input } ! []
+            ( { model | field = input }, Cmd.none )
 
         Send input ->
-            { model | field = "" } ! []
+            ( { model | field = "" }, WebSocket.send "ws://echo.websocket.org" input )
 
 
 
