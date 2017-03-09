@@ -49,7 +49,7 @@ init flags =
 
 type Msg
     = UI UI.Msg
-    | Message Socket.Receive
+    | Message String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -76,7 +76,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Socket.listen "ws://echo.websocket.org" Message
+    WebSocket.listen "ws://echo.websocket.org" Message
 
 
 
